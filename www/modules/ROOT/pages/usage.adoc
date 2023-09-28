@@ -1,0 +1,24 @@
+= Usage
+
+The modules exported from the `@hacksjs/web` package are coded in standard ECMAScript module notation. This means you will need to use the standard `import` syntax to include the modules in your own programs.
+
+[source,js]
+----
+import * as web from '@hacksjs/web'
+----
+
+We do not ship hybrid modules, therefore you cannot directly `require()` modules from this package, from the context of applications written in the non-standard CommonJS module format.
+
+[source,js]
+----
+const web = require('@hacksjs/web')
+----
+
+Instead you must use https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import[dynamic imports] to asynchronously load ES modules into CommonJS scripts:
+
+[source,js]
+----
+const web = await import('@hacksjs/web')
+----
+
+NOTE: Dynamic imports are not supported in Node in the context of workers. Therefore, to use `@hacksjs/web` packages in workers, you will need to transform the `@hacksjs/web` modules to CommonJS.

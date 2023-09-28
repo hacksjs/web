@@ -1,0 +1,176 @@
+= `@hacksjs/web/document`
+
+This library is a minimal abstraction layer around the https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model[Document Object Model (DOM)] and its https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Events[Events]. It exposes a terse jQuery-inspired API for querying and manipulating HTML and SVG documents, and for responding to user interactions with those documents.
+
+== Usage
+
+There are two ways to consume the `@hacksjs/web/document` library:
+
+.Method 1: Import individual functions
+[source,js]
+----
+import { find, addClass } from '@hacksjs/web/document'
+
+const targets = find('.target')
+addClass('is-selected', targets)
+----
+
+.Method 2: Import the $() wrapper.
+[source,js]
+----
+import { $ } from '@hacksjs/web/document'
+
+$('.target').addClass('is-selected')
+----
+
+Similar to jQuery, the `$()` function returns a wrapper object encapsulating a collection of DOM elements. All the individual functions exported from `@hacksjs/web/document` are made available as methods of this wrapper object.
+
+There are pros and cons to each approach. The main advantage of the `$()` wrapper is that it exposes a familiar jQuery-like fluid API. This promotes terse code composed of chainable methods. The main tradeoff is that you are importing the entire `@hacksjs/web/document` library. Even the functions that you don't use will be shipped with your application, and not even https://www.smashingmagazine.com/2021/05/tree-shaking-reference-guide/[tree shaking] will solve this.
+
+Importing only the functions you need should mean smaller builds. The standalone functions also support functional programming practices such as currying.
+
+////
+TODO: Give an example of currying with this library.
+////
+
+== Comparison to jQuery
+
+The `@hacksjs/web/document` library is _not_ a drop-in replacement for jQuery. Although many of the `$()` methods share the same names and accept the same parameters, there are important differences in both external APis and internal algorithms.
+
+For example, jQuery's `data()` method accepts objects and arrays for its `value` parameter. The equivalent method in this library does not.
+
+[source,js]
+----
+// jQuery
+$('.target').data('prop', true)
+$('.target').data('prop', { test: true })
+
+// @hacksjs/web/document
+$('.target').data('prop', true)
+$('.target').data('prop', { test: true }) // → TypeError
+----
+
+jQuery's API was used as a starting point in the design of the `@hacksjs/web/document` API. From that foundation, the design was iterated to simplify function signatures, reduce function overloading, implement both static and runtime type checking, and improve support for functional programming.
+
+The `@hacksjs/web/document` library is smaller in scope than jQuery. This library is dedicated to the task of interacting with the DOM and responding to DOM Events. jQuery does more. It adds an https://api.jquery.com/category/ajax/[HTTP abstraction] and general-purpose https://api.jquery.com/category/utilities/[utility functions]. Hacks.js does offer equivalent APIs, but it does so via separate libraries and packages.
+
+== Benefits
+
+When jQuery was released in 2006, handling cross-browser compatibility was a headache for web developers. jQuery abstracted the inconsistent DOM implementations behind a simple API that worked in every browser. But over time, as the industry converged on open web standards, jQuery became less useful and its popularity waned.
+
+But there remain benefits to using a DOM abstraction library. The DOM and other web APIs are somewhat verbose. For example, to change the content of an HTML element you have to write something like this:
+
+[source,js]
+----
+document.getElementById('#target').innerHTML = 'Replacement content…'
+----
+
+A DOM abstraction can reduce much boilerplate code. A good DOM abstraction will also encapsulate cross-cutting concerns like input sanitization and error handling, reduce brittleness in our applications by building in type checking and failing earlier and harder, and more generally make it easier to write JavaScript programs at a higher level of abstraction.
+
+[source,js]
+----
+$('#target').html = 'Replacement content…'
+----
+
+////
+
+== API
+
+=== Wrapper
+
+- link:./wrapper.adoc[`$()`]
+
+=== Selection, traversal and filtering
+
+- link:./selectors.adoc[CSS Selectors]
+- link:./add.adoc[`add()`]
+- link:./children.adoc[`children()`]
+- link:./contains.adoc[`contains()`]
+- link:./count.adoc[`count()`]
+- link:./closest.adoc[`closest()`]
+- link:./contents.adoc[`contents()`]
+- link:./each.adoc[`each()`]
+- link:./eq.adoc[`eq()`]
+- link:./filter.adoc[`filter()`]
+- link:./find.adoc[`find()`]
+- link:./first.adoc[`first()`]
+- link:./forEach.adoc[`forEach()`]
+- link:./get.adoc[`get()`]
+- link:./has.adoc[`has()`]
+- link:./getIndex.adoc[`getIndex()`]
+- link:./is.adoc[`is()`]
+- link:./last.adoc[`last()`]
+- link:./map.adoc[`map()`]
+- link:./next.adoc[`next()`]
+- link:./not.adoc[`not()`]
+- link:./offsetParent.adoc[`offsetParent()`]
+- link:./parent.adoc[`parent()`]
+- link:./parents.adoc[`parents()`]
+- link:./prev.adoc[`prev()`]
+- link:./siblings.adoc[`siblings()`]
+
+=== Type assertions
+
+- link:./isWindow.adoc[`isWindow()`]
+
+=== Element attributes and style
+
+- link:./addClass.adoc[`addClass()`]
+- link:./animate.adoc[`animate()`]
+- link:./attr.adoc[`attr()`]
+- link:./css.adoc[`css()`]
+- link:./data.adoc[`data()`]
+- link:./hasClass.adoc[`hasClass()`]
+- link:./height.adoc[`height()`]
+- link:./offset.adoc[`offset()`]
+- link:./position.adoc[`position()`]
+- link:./prop.adoc[`prop()`]
+- link:./removeAttr.adoc[`removeAttr()`]
+- link:./removeClass.adoc[`removeClass()`]
+- link:./removeProp.adoc[`removeProp()`]
+- link:./scrollLeft.adoc[`scrollLeft()`]
+- link:./scrollTop.adoc[`scrollTop()`]
+- link:./serialize.adoc[`serialize()`]
+- link:./toggleClass.adoc[`toggleClass()`]
+- link:./value.adoc[`value()`]
+- link:./width.adoc[`width()`]
+
+=== Document tree manipulation
+
+- link:./after.adoc[`after()`]
+- link:./append.adoc[`append()`]
+- link:./appendTo.adoc[`appendTo()`]
+- link:./before.adoc[`before()`]
+- link:./copying.adoc[`copying()`]
+- link:./concat.adoc[`concat()`]
+- link:./empty.adoc[`empty()`]
+- link:./html.adoc[`html()`]
+- link:./insertAfter.adoc[`insertAfter()`]
+- link:./insertBefore.adoc[`insertBefore()`]
+- link:./prepend.adoc[`prepend()`]
+- link:./prependTo.adoc[`prependTo()`]
+- link:./push.adoc[`push()`]
+- link:./remove.adoc[`remove()`]
+- link:./replaceWith.adoc[`replaceWith()`]
+- link:./text.adoc[`text()`]
+- link:./unwrap.adoc[`unwrap()`]
+- link:./wrap.adoc[`wrap()`]
+- link:./wrappAll.adoc[`wrapAll()`]
+- link:./wrapInner.adoc[`wrapInner()`]
+
+=== Animations and visibility
+
+- link:./hide.adoc[`hide()`]
+- link:./show.adoc[`show()`]
+- link:./toggle.adoc[`toggle()`]
+
+=== Events
+
+- link:./ready.adoc[`ready()`]
+- link:./off.adoc[`off()`]
+- link:./on.adoc[`on()`]
+- link:./one.adoc[`one()`]
+- link:./submit.adoc[`submit()`]
+- link:./trigger.adoc[`trigger()`]
+
+////
